@@ -6,11 +6,13 @@ require dirname ( __FILE__ ) . '/db.php';
 
 if ( $_SERVER['REQUEST_METHOD'] == 'POST' )
 {
-	$items = SQL::P( "SELECT * FROM test_table WHERE phone = ?", [ filter_var ( $_POST['phone'], FILTER_SANITIZE_NUMBER_INT ) ] ) -> fetch( PDO::FETCH_ASSOC );
+	$statement = SQL::P( "SELECT * FROM test_table WHERE phone = ?", [ filter_var ( $_POST['phone'], FILTER_SANITIZE_NUMBER_INT ) ] );
 	
-	if ( isset ( $items['id'] ) )
+	if ( $statement -> rowCount() > 0 )
 	{
-		printf ( 'ID: %s<br>Number: %s<br>Image: <br><img src="%s">', $items['id'], $items['phone'], $items['url'] );
+		[ $id, $phone, $url ] = $statement -> fetch( PDO::FETCH_ASSOC );
+		
+		printf ( 'ID: %s<br>Number: %s<br>Image: <br><img src="%s">', $id, $phone, $url );
 	}
 	else
 	{
